@@ -1,6 +1,5 @@
 import { use, useState } from "react";
 
-// Initial list of friends with their details and balance
 const initialFriends = [
   {
     id: 118836,
@@ -22,7 +21,6 @@ const initialFriends = [
   },
 ];
 
-// Reusable button component
 function Button({ children, onClick }) {
   return (
     <button className="button" onClick={onClick}>
@@ -32,30 +30,25 @@ function Button({ children, onClick }) {
 }
 
 export default function App() {
-  // Application state
   const [friends, setFriends] = useState(initialFriends);
   const [showAddFriend, setShowAddFriend] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
-  // Toggle the "Add Friend" form visibility
   function handleShowAddFriend() {
     setShowAddFriend((show) => !show);
   }
 
-  // Add a new friend to the list
   function handleAddFriend(friend) {
     setFriends((friends) => [...friends, friend]);
     setShowAddFriend(false);
   }
 
-  // Select or deselect a friend
   function handleSelection(friend) {
     // setSelectedFriend(friend);
     setSelectedFriend((cur) => (cur?.id === friend.id ? null : friend));
     setShowAddFriend(false);
   }
 
-  // Update a friend's balance when the bill is split
   function handleSplitBill(value) {
     setFriends((friends) =>
       friends.map((friend) =>
@@ -64,8 +57,9 @@ export default function App() {
           : friend
       )
     );
-    setSelectedFriend(null); // Deselect the friend after splitting
 
+    setSelectedFriend(null);
+  }
 
   return (
     <div className="app">
@@ -93,7 +87,6 @@ export default function App() {
   );
 }
 
-// Component to list all friends
 function FriendsList({ friends, onSelection, selectedFriend }) {
   return (
     <ul>
@@ -109,7 +102,6 @@ function FriendsList({ friends, onSelection, selectedFriend }) {
   );
 }
 
-// Individual friend component
 function Friend({ friend, onSelection, selectedFriend }) {
   const isSelected = selectedFriend?.id === friend.id;
 
@@ -138,18 +130,16 @@ function Friend({ friend, onSelection, selectedFriend }) {
   );
 }
 
-// Form to add a new friend
 function FormAddFriend({ onAddFriend }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("https://i.pravatar.cc/48");
 
-  // Handle form submission
   function handleSubmit(e) {
     e.preventDefault();
 
     if (!name || !image) return;
 
-    const id = crypto.randomUUID(); //Generate a Unique ID
+    const id = crypto.randomUUID();
     const newFriend = {
       id,
       name,
@@ -157,9 +147,8 @@ function FormAddFriend({ onAddFriend }) {
       balance: 0,
     };
 
-    onAddFriend(newFriend); //add nw friend
+    onAddFriend(newFriend);
 
-    // Reset form fields
     setName("");
     setImage("https://i.pravatar.cc/48");
   }
@@ -185,18 +174,15 @@ function FormAddFriend({ onAddFriend }) {
   );
 }
 
-// Form to split a bill with a selected friend
 function FormSplitBill({ selectedFriend, onSplitBill }) {
   const [bill, setBill] = useState("");
   const [paidByUser, setPaidByUser] = useState("");
   const paidByFriend = bill ? bill - paidByUser : "";
   const [whoIsPaying, setWhoIsPaying] = useState("user");
 
-  // Handle bill split submission
   function handleSubmit(e) {
     e.preventDefault();
 
-    // Determine who paid and calculate how much to update the balance by
     if (!bill || !paidByUser) return;
     onSplitBill(whoIsPaying === "user" ? paidByFriend : -paidByUser);
   }
